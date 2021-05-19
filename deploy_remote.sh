@@ -1,7 +1,5 @@
 #!/bin/bash
 #deploy_remote.sh
-#!/bin/bash
-#deploy_remote.sh
 
 MACHINE_DESTINATION=ec2-user@ec2-184-72-140-90.compute-1.amazonaws.com
 
