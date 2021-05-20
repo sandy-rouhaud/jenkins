@@ -1,7 +1,7 @@
 #!/bin/bash
 #deploy_remote.sh
 
-MACHINE_DESTINATION=ec2-user@ec2-184-72-140-90.compute-1.amazonaws.com
+MACHINE_DESTINATION=ec2-user@ec2-52-201-68-205.compute-1.amazonaws.com
 PATH_PRIVATE_KEY=/secrets/kp-sandy.pem
 
 ssh -o StrictHostKeyChecking=no -i $PATH_PRIVATE_KEY $MACHINE_DESTINATION 'sudo amazon-linux-extras install -y java-openjdk11'
