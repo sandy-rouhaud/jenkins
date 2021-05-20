@@ -1,30 +1,29 @@
 ---
-- name: Create docker data directory
-  file: path={{pl_docker_data}} state=directory
+- include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
 
-- name: Make sure aufs support is available
-  apt: name={{item}} state=present
-  with_items:
-  - linux-image-extra-{{ansible_kernel}}
+- include_tasks: setup-Debian.yml
+  when: ansible_os_family == 'Debian'
 
-- name: Add the docker APT key
-  apt_key: keyserver=hkp://p80.pool.sks-keyservers.net:80 id=58118E89F3A912897C070ADBF76221572C52609D state=present
-
-- name: Add the docker source to the APT source list
-  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-{{ansible_distribution_release}} main' state=present
-
-- name: Install docker
-  apt: name={{item}} state=present
-  with_items:
-  - docker-engine
-
-- name: Install docker python packages
-  pip: name={{item.name}} version={{item.version}} state=present
-  with_items:
-  - { name: docker-py, version: '{{pl_docker_py_version}}' }
-
-- name: Change docker directory
-  lineinfile: dest=/lib/systemd/system/docker.service regexp={{item.regexp}} line={{item.line}} state=present backrefs=yes
-  with_items:
-    - { regexp: 'ExecStart=', line: "ExecStart=/usr/bin/dockerd -g {{pl_docker_data}} -H fd://" }
+- name: Install Docker.
+  package:
+    name: "{{ docker_package }}"
+    state: "{{ docker_package_state }}"
   notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Ensure Docker is started and enabled at boot.
+  service:
+    name: docker
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Ensure handlers are notified now to avoid firewall conflicts.
+  meta: flush_handlers
+
+- include_tasks: docker-compose.yml
+  when: docker_install_compose | bool
+
+- include_tasks: docker-users.yml
+  when: docker_users | length > 0
