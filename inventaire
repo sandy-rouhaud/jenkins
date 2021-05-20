@@ -1,3 +1,3 @@
 [myserver]
-localhost ansible_ssh_user=ec2-user ansible_ssh_private_key_file=/secrets/kp-sandy.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# localhost ansible_ssh_user=ec2-user ansible_ssh_private_key_file=/secrets/kp-sandy.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 52.201.68.205 ansible_ssh_user=ec2-user ansible_ssh_private_key_file=/secrets/kp-sandy.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'
